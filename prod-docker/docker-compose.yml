@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+    mongo:
+        image: 'nivsv/domainsanalysis-mongo'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+            MONGO_REPLICA_HOST: host.docker.internal
+            MONGO_REPLICA_PORT: 27018
+        ports:
+            - '27018:27018'
+    redis:
+        image: 'bitnami/redis:latest'
+        environment:
+            - REDIS_PORT_NUMBER=6379
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - 6379:6379
+    app:
+        image: 'nivsv/domainsanalysis-app:latest'
+        ports:
+            - '8080:8080'
+        depends_on:
+            - mongo
