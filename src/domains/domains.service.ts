@@ -13,7 +13,15 @@ export class DomainsService {
     constructor(@InjectQueue('domains') private readonly domainsQueue: Queue) {}
 
     async addToDomainQue(domain: string) {
-        await this.domainsQueue.add('fetch_data', { domain })
+        this.domainsQueue.getJobs(['active', 'waiting']).then((jobs) => {
+            const job = jobs.find((job) => job.data.domain === domain)
+            if (job == null) {
+                this.logger.log(`Adding ${domain} to the queue.`)
+                this.domainsQueue.add('fetch_data', { domain })
+            } else {
+                this.logger.log(`Domain ${domain} is already in the queue.`)
+            }
+        })
     }
 
     async getDomainData(domain: string) {
