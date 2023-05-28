@@ -1,3 +1,6 @@
+version: '3.8'
+name: DomainsAnalysisContainer
+
 services:
     database:
         container_name: mongo_db

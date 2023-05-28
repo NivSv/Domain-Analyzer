@@ -13,25 +13,7 @@ export class DomainsService {
     constructor(@InjectQueue('domains') private readonly domainsQueue: Queue) {}
 
     async addToDomainQue(domain: string) {
-        const WHOIS_res = await axios.get(
-            `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=at_aTJ2tR0PqCY8vTyqKvxqLvGnMVbSK&domainName=${domain}&outputFormat=JSON`
-        )
-        await this.prisma.domains.upsert({
-            where: {
-                domain: domain,
-            },
-            update: {
-                virusTotal_Data: {},
-                WHOIS_Data: WHOIS_res.data,
-                lastScanned: new Date(),
-            },
-            create: {
-                domain: domain,
-                virusTotal_Data: {},
-                WHOIS_Data: WHOIS_res?.data?.WhoisRecord || {},
-                lastScanned: new Date(),
-            },
-        })
+        await this.domainsQueue.add('fetch_data', domain)
     }
 
     async getDomainData(domain: string) {
