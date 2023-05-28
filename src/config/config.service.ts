@@ -15,6 +15,7 @@ export class ConfigService {
             port: z.number().or(z.string()),
             WHOIS_KEY: z.string(),
             VIRUS_TOTAL_KEY: z.string(),
+            SCHEDULING_ANALYSIS_CRON: z.string(),
         })
 
         environmentVariablesSchema.parse(this)
@@ -30,5 +31,9 @@ export class ConfigService {
 
     get VIRUS_TOTAL_KEY(): string {
         return this.envCache.VIRUS_TOTAL_KEY || ''
+    }
+
+    get SCHEDULING_ANALYSIS_CRON(): string {
+        return this.envCache.SCHEDULING_ANALYSIS_CRON || '0 0 1 * * *' // Every first day of the month.
     }
 }

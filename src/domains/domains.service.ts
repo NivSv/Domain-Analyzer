@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
 import { Cron } from '@nestjs/schedule'
+import { ConfigService } from '../config/config.service'
 
 @Injectable()
 export class DomainsService {
@@ -11,7 +12,7 @@ export class DomainsService {
 
     constructor(@InjectQueue('domains') private readonly domainsQueue: Queue) {}
 
-    async addToDomainQue(domain: string) {
+    async addToDomainsQueue(domain: string) {
         this.domainsQueue.getJobs(['active', 'waiting']).then((jobs) => {
             const job = jobs.find((job) => job.data.domain === domain)
             if (job == null) {
@@ -30,17 +31,17 @@ export class DomainsService {
             },
         })
         if (domainFound == null) {
-            this.addToDomainQue(domain)
+            this.addToDomainsQueue(domain)
         }
         return domainFound
     }
 
-    @Cron('0 0 1 * * *') // Every first day of the month at.
+    @Cron(new ConfigService().SCHEDULING_ANALYSIS_CRON) // Every first day of the month at.
     async AnalyzeAllDomains(): Promise<void> {
         this.logger.log('Analyzing all domains.')
         const domains = await this.prisma.domains.findMany()
         domains.forEach((domain) => {
-            this.addToDomainQue(domain.domain)
+            this.addToDomainsQueue(domain.domain)
         })
     }
 }

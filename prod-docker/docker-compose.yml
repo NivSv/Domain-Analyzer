@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     mongo:
-        build: ./mongodb_replica
+        image: 'nivsv/domainsanalysis-mongo'
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: example
@@ -18,9 +18,7 @@ services:
         ports:
             - 6379:6379
     app:
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: 'nivsv/domainsanalysis-app:latest'
         ports:
             - '8080:8080'
         depends_on:

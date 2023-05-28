@@ -17,7 +17,7 @@ COPY ./tsconfig.build.json   ./
 COPY ./prisma                ./
 
 RUN pnpm install --ignore-scripts --frozen-lockfile
-RUN pnpm run prisma
-RUN pnpm run build
+RUN pnpm prisma generate
+RUN pnpm build
 
-CMD ["pnpm", "start"]
+CMD pnpm db && pnpm prod

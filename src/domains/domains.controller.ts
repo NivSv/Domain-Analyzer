@@ -64,6 +64,6 @@ export class DomainsController {
     async addToDomainQue(@Param('domain') domain: string): Promise<void> {
         if (isValidDomain(domain) == false)
             throw new BadRequestException('Invalid domain.')
-        return await this.domainsService.addToDomainQue(domain)
+        return await this.domainsService.addToDomainsQueue(domain)
     }
 }
