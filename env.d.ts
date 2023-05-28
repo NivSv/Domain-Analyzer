@@ -4,5 +4,6 @@ declare namespace NodeJS {
         DATABASE_URL: string
         WHOIS_KEY: string
         VIRUS_TOTAL_KEY: string
+        SCHEDULING_ANALYSIS_CRON: string
     }
 }

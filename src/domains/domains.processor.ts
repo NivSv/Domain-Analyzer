@@ -12,21 +12,21 @@ export class DomainsProcessor {
     async FetchDomainData(job: Job) {
         try {
             const { domain } = job.data
-            const whoIs_data = await WhoIsApi(domain)
-            const virusTotal_data = await VirusTotalApi(domain)
+            const whoIsData = await WhoIsApi(domain)
+            const virusTotalData = await VirusTotalApi(domain)
             await this.prisma.domains.upsert({
                 where: {
                     domain: domain,
                 },
                 update: {
-                    virusTotal_Data: virusTotal_data || {},
-                    WHOIS_Data: whoIs_data || {},
+                    virusTotal_Data: virusTotalData || {},
+                    WHOIS_Data: whoIsData || {},
                     lastScanned: new Date(),
                 },
                 create: {
                     domain: domain,
-                    virusTotal_Data: virusTotal_data || {},
-                    WHOIS_Data: whoIs_data || {},
+                    virusTotal_Data: virusTotalData || {},
+                    WHOIS_Data: whoIsData || {},
                     lastScanned: new Date(),
                 },
             })
