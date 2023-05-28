@@ -6,6 +6,7 @@ import {
     NotFoundException,
     Param,
     Post,
+    Req,
 } from '@nestjs/common'
 import { DomainsService } from './domains.service'
 import { isValidDomain } from '../utils/zod.utils'
@@ -17,6 +18,7 @@ import {
 } from '@nestjs/swagger'
 import { Domains } from '@prisma/client'
 import { domainStub } from './stubs/domain.stub'
+import { Request } from 'express'
 
 @ApiTags('domains')
 @Controller('domains')
@@ -37,7 +39,10 @@ export class DomainsController {
             'Domain Analysis not found. (Adding to queue for feature analysis)',
     })
     @Get(':domain')
-    async getDomainData(@Param('domain') domain: string): Promise<Domains> {
+    async getDomainData(
+        @Req() req: Request,
+        @Param('domain') domain: string
+    ): Promise<Domains> {
         if (isValidDomain(domain) == false)
             throw new BadRequestException('Invalid domain.')
         const domainFound = await this.domainsService.getDomainData(domain)
