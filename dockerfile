@@ -20,4 +20,4 @@ RUN pnpm install --ignore-scripts --frozen-lockfile
 RUN pnpm prisma generate
 RUN pnpm build
 
-CMD ["pnpm", "prod"]
+CMD pnpm db && pnpm prod

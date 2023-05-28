@@ -1,16 +1,15 @@
 version: '3.8'
 
 services:
-    database:
-        container_name: mongo_db
-        image: prismagraphql/mongo-single-replica:4.4.3-bionic
-        restart: always
-        ports:
-            - 27017:27017
+    mongo:
+        build: ./mongodb_replica
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: example
-            INIT_WAIT_SEC: 3
+            MONGO_REPLICA_HOST: host.docker.internal
+            MONGO_REPLICA_PORT: 27018
+        ports:
+            - '27018:27018'
     redis:
         image: 'bitnami/redis:latest'
         environment:
@@ -25,4 +24,4 @@ services:
         ports:
             - '8080:8080'
         depends_on:
-            - database
+            - mongo
