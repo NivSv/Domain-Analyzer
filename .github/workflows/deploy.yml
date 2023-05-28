@@ -53,6 +53,9 @@ jobs:
             - name: Install dependencies
               run: pnpm install --ignore-scripts --frozen-lockfile
 
+            - name: Prisma Generate types
+              run: pnpm prisma generate
+
             - name: Lint
               run: pnpm lint
 
