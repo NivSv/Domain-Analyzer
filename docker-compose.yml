@@ -1,0 +1,18 @@
+services:
+    database:
+        container_name: mongo_db
+        image: prismagraphql/mongo-single-replica:4.4.3-bionic
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+            INIT_WAIT_SEC: 3
+    redis:
+        image: 'bitnami/redis:latest'
+        environment:
+            - REDIS_PORT_NUMBER=6379
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - 6379:6379
