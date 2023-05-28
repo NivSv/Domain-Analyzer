@@ -1,8 +1,8 @@
 import { Process, Processor } from '@nestjs/bull'
 import { Inject, Logger } from '@nestjs/common'
 import { Job } from 'bull'
-import axios from 'axios'
 import { PrismaService } from '../prisma.service'
+import { VirusTotalApi, WhoIsApi } from '../dataServices'
 
 @Processor('domains')
 export class DomainsProcessor {
@@ -12,22 +12,21 @@ export class DomainsProcessor {
     async FetchDomainData(job: Job) {
         try {
             const { domain } = job.data
-            const WHOIS_res = await axios.get(
-                `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=at_aTJ2tR0PqCY8vTyqKvxqLvGnMVbSK&domainName=${domain}&outputFormat=JSON`
-            )
+            const whoIs_data = await WhoIsApi(domain)
+            const virusTotal_data = await VirusTotalApi(domain)
             await this.prisma.domains.upsert({
                 where: {
                     domain: domain,
                 },
                 update: {
-                    virusTotal_Data: {},
-                    WHOIS_Data: WHOIS_res.data,
+                    virusTotal_Data: virusTotal_data || {},
+                    WHOIS_Data: whoIs_data || {},
                     lastScanned: new Date(),
                 },
                 create: {
                     domain: domain,
-                    virusTotal_Data: {},
-                    WHOIS_Data: WHOIS_res?.data?.WhoisRecord || {},
+                    virusTotal_Data: virusTotal_data || {},
+                    WHOIS_Data: whoIs_data || {},
                     lastScanned: new Date(),
                 },
             })

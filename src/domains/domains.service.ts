@@ -13,7 +13,7 @@ export class DomainsService {
     constructor(@InjectQueue('domains') private readonly domainsQueue: Queue) {}
 
     async addToDomainQue(domain: string) {
-        await this.domainsQueue.add('fetch_data', domain)
+        await this.domainsQueue.add('fetch_data', { domain })
     }
 
     async getDomainData(domain: string) {
