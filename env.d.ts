@@ -3,5 +3,6 @@ declare namespace NodeJS {
         PORT?: number
         DATABASE_URL: string
         WHOIS_KEY: string
+        VIRUS_TOTAL_KEY: string
     }
 }

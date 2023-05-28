@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { DomainsModule } from './domains/domains.module'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { BullModule } from '@nestjs/bull'
@@ -6,6 +6,7 @@ import { ConfigModule } from './config/config.module'
 import { ZodValidationPipe } from 'nestjs-zod'
 import { APP_PIPE } from '@nestjs/core'
 import { ScheduleModule } from '@nestjs/schedule'
+import { LoggerMiddleware } from './request-logs/logger.middleware'
 
 @Module({
     imports: [
@@ -31,4 +32,8 @@ import { ScheduleModule } from '@nestjs/schedule'
         },
     ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerMiddleware).forRoutes('*')
+    }
+}

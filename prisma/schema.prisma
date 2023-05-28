@@ -17,3 +17,11 @@ model Domains {
     WHOIS_Data      Json
     lastScanned     DateTime? @default(now())
 }
+
+model RequestLogs {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    ip         String
+    endpoint   String
+    parameters String
+    timestamp  DateTime @default(now())
+}

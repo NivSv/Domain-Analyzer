@@ -14,6 +14,7 @@ export class ConfigService {
         const environmentVariablesSchema = z.object({
             port: z.number().or(z.string()),
             WHOIS_KEY: z.string(),
+            VIRUS_TOTAL_KEY: z.string(),
         })
 
         environmentVariablesSchema.parse(this)
@@ -25,5 +26,9 @@ export class ConfigService {
 
     get WHOIS_KEY(): string {
         return this.envCache.WHOIS_KEY || ''
+    }
+
+    get VIRUS_TOTAL_KEY(): string {
+        return this.envCache.VIRUS_TOTAL_KEY || ''
     }
 }

@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
-import axios from 'axios'
 import { Cron } from '@nestjs/schedule'
 
 @Injectable()
@@ -13,7 +12,15 @@ export class DomainsService {
     constructor(@InjectQueue('domains') private readonly domainsQueue: Queue) {}
 
     async addToDomainQue(domain: string) {
-        await this.domainsQueue.add('fetch_data', domain)
+        this.domainsQueue.getJobs(['active', 'waiting']).then((jobs) => {
+            const job = jobs.find((job) => job.data.domain === domain)
+            if (job == null) {
+                this.logger.log(`Adding ${domain} to the queue.`)
+                this.domainsQueue.add('fetch_data', { domain })
+            } else {
+                this.logger.warn(`Domain ${domain} is already in the queue.`)
+            }
+        })
     }
 
     async getDomainData(domain: string) {
