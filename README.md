@@ -10,6 +10,8 @@
 
 The project incorporates a queuing mechanism for background analysis of domains. This allows domains to be added to the analysis queue, ensuring efficient and asynchronous processing. The system leverages the queuing system to handle analysis requests in the background while providing immediate responses to API endpoints.
 
+Prod Website: https://domain-analyzer-service.onrender.com/api (running on cold start might take few mins).
+
 ## Technologies
 
 NestJS, Prisma, Docker, Redis, Zod
@@ -23,7 +25,7 @@ NestJS, Prisma, Docker, Redis, Zod
 -   Scalable Design: The system is designed to be scalable, accommodating increasing demands for domain analysis. It can handle a growing number of domains efficiently and effectively.
 -   Past Results Storage: The system stores past analysis results, enabling the retrieval of historical domain information.
 
-## Docker Compose For EZ setup
+## Docker compose for EZ setup
 
 ```
 version: '3.8'
