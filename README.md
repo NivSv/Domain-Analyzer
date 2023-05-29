@@ -52,6 +52,16 @@ services:
             - ALLOW_EMPTY_PASSWORD=yes
         ports:
             - 6379:6379
+    redis-commander:
+        hostname: redis-commander
+        image: rediscommander/redis-commander:latest
+        restart: always
+        environment:
+            - REDIS_HOSTS=local:redis:6379
+        ports:
+            - '8081:8081'
+        depends_on:
+            - redis
     app:
         image: 'nivsv/domainsanalysis-app:latest'
         ports:
