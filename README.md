@@ -27,6 +27,7 @@ NestJS, Prisma, Docker, Redis, Zod
 -   Past Results Storage: The system stores past analysis results, enabling the retrieval of historical domain information.
 
 ## Setup
+
 ### Swagger will be serve at http://localhost:8080/api - port of your server default 8080
 
 ### Docker compose for EZ setup
@@ -51,6 +52,16 @@ services:
             - ALLOW_EMPTY_PASSWORD=yes
         ports:
             - 6379:6379
+    redis-commander:
+        hostname: redis-commander
+        image: rediscommander/redis-commander:latest
+        restart: always
+        environment:
+            - REDIS_HOSTS=local:redis:6379
+        ports:
+            - '8081:8081'
+        depends_on:
+            - redis
     app:
         image: 'nivsv/domainsanalysis-app:latest'
         ports:
@@ -60,15 +71,17 @@ services:
 ```
 
 ### Local run
+
 make sure you running the docker-compose up to get instance of mongo and redis running. (you can cancel the auto run of the app or comment in docker-compose)
 
 set you environment variables:
-* `PORT`: server port defaults - 8080
-* `DATABASE_URL`: database url
-* `WHOIS_KEY`: WHOIS API key
-* `VIRUS_TOTAL_KEY`: Virus Total API key
-* `SCHEDULING_ANALYSIS_CRON`: cron time of how frenquently you analize the domains you have - defaults to "0 0 1 * * *" every first day of the month
-* `REDIS_HOST` redis host - defaults to "localhost"
+
+-   `PORT`: server port defaults - 8080
+-   `DATABASE_URL`: database url
+-   `WHOIS_KEY`: WHOIS API key
+-   `VIRUS_TOTAL_KEY`: Virus Total API key
+-   `SCHEDULING_ANALYSIS_CRON`: cron time of how frequently you analyze the domains you have - defaults to "0 0 1 \* \* \*" every first day of the month
+-   `REDIS_HOST` redis host - defaults to "localhost"
 
 Run
 `pnpm i && pnpm db` to install dependencies and sync up the db.
