@@ -27,6 +27,7 @@ NestJS, Prisma, Docker, Redis, Zod
 -   Past Results Storage: The system stores past analysis results, enabling the retrieval of historical domain information.
 
 ## Setup
+### Swagger will be serve at http://localhost:8080/api - port of your server default 8080
 
 ### Docker compose for EZ setup
 
