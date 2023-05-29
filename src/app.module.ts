@@ -7,6 +7,7 @@ import { ZodValidationPipe } from 'nestjs-zod'
 import { APP_PIPE } from '@nestjs/core'
 import { ScheduleModule } from '@nestjs/schedule'
 import { LoggerMiddleware } from './request-logs/logger.middleware'
+import { ConfigService } from './config/config.service'
 
 @Module({
     imports: [
@@ -16,10 +17,15 @@ import { LoggerMiddleware } from './request-logs/logger.middleware'
             ttl: 60,
             limit: 10,
         }),
-        BullModule.forRoot({
-            redis: {
-                host: 'redis',
-                port: 6379,
+        BullModule.forRootAsync({
+            useFactory: () => {
+                const configService = new ConfigService()
+                return {
+                    redis: {
+                        host: configService.REDIS_HOST,
+                        port: 6379,
+                    },
+                }
             },
         }),
         DomainsModule,

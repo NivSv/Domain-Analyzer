@@ -16,6 +16,7 @@ export class ConfigService {
             WHOIS_KEY: z.string(),
             VIRUS_TOTAL_KEY: z.string(),
             SCHEDULING_ANALYSIS_CRON: z.string(),
+            REDIS_HOST: z.string(),
         })
 
         environmentVariablesSchema.parse(this)
@@ -35,5 +36,9 @@ export class ConfigService {
 
     get SCHEDULING_ANALYSIS_CRON(): string {
         return this.envCache.SCHEDULING_ANALYSIS_CRON || '0 0 1 * * *' // Every first day of the month.
+    }
+
+    get REDIS_HOST(): string {
+        return this.envCache.REDIS_HOST || 'localhost'
     }
 }

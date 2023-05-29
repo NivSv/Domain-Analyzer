@@ -1,73 +1,57 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Domain Analyzer
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Table of contents
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+-   [General info](#general-info)
+-   [Features](#features)
+-   [Technologies](#technologies)
 
-## Description
+## General info
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The project incorporates a queuing mechanism for background analysis of domains. This allows domains to be added to the analysis queue, ensuring efficient and asynchronous processing. The system leverages the queuing system to handle analysis requests in the background while providing immediate responses to API endpoints.
 
-## Installation
+## Technologies
 
-```bash
-$ pnpm install
+NestJS, Prisma, Docker, Redis, Zod
+
+## Features
+
+-   Domain Information Retrieval: The system gathers security and identity information about domains using APIs like VirusTotal and WHOIS, storing the data for future reference.
+-   Scheduled Monthly Analysis: The analysis queue runs on the first day of every month, allowing regular and predictable domain scanning intervals. This configurable schedule ensures periodic and up-to-date domain information.
+-   Analysis Queue: Domains added for analysis are processed through a queue system, ensuring efficient background processing. The queue mechanism prevents duplicate domains from being added and ensures that domains are analyzed once.
+-   Docker Deployment: The project includes a Dockerfile and docker-compose, enabling easy setup and deployment of the system. This ensures a consistent and reproducible environment for running the application.
+-   Scalable Design: The system is designed to be scalable, accommodating increasing demands for domain analysis. It can handle a growing number of domains efficiently and effectively.
+-   Past Results Storage: The system stores past analysis results, enabling the retrieval of historical domain information.
+
+## Docker Compose For EZ setup
+
+```
+version: '3.8'
+
+services:
+    mongo:
+        image: 'nivsv/domainsanalysis-mongo:latest'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+            MONGO_REPLICA_HOST: host.docker.internal
+            MONGO_REPLICA_PORT: 27018
+        ports:
+            - '27018:27018'
+    redis:
+        image: 'bitnami/redis:latest'
+        environment:
+            - REDIS_PORT_NUMBER=6379
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - 6379:6379
+    app:
+        image: 'nivsv/domainsanalysis-app:latest'
+        ports:
+            - '8080:8080'
+        depends_on:
+            - mongo
 ```
 
-## Running the app
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+![image](https://github.com/NivSv/Domain-Analyzer/assets/71709946/e6191895-618c-4713-b171-7664a0df58fc)
+![image](https://github.com/NivSv/Domain-Analyzer/assets/71709946/cc37f90c-86e4-471c-a0d9-62787fb8e1f9)
