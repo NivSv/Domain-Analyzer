@@ -7,11 +7,12 @@ import {
 import { Inject, Logger } from '@nestjs/common'
 import { Job } from 'bull'
 import { PrismaService } from '../prisma.service'
-import { VirusTotalApi, WhoIsApi } from '../dataServices'
+import { ApisService } from '../apis/apis.service'
 
 @Processor('domains')
 export class DomainsProcessor {
     @Inject(PrismaService) private readonly prisma!: PrismaService
+    @Inject(ApisService) private readonly apisService!: ApisService
     private readonly logger = new Logger(DomainsProcessor.name)
 
     @OnQueueCompleted()
@@ -38,8 +39,10 @@ export class DomainsProcessor {
     @Process('fetch_data')
     async FetchDomainData(job: Job) {
         const { domain } = job.data
-        const whoIsData = await WhoIsApi(domain)
-        const virusTotalData = await VirusTotalApi(domain)
+        const [whoIsData, virusTotalData] = await Promise.all([
+            this.apisService.WhoIsApi(domain),
+            this.apisService.VirusTotalApi(domain),
+        ])
         await this.prisma.domains.upsert({
             where: {
                 domain: domain,
